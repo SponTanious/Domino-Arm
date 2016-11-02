@@ -25,18 +25,14 @@ depthImage = step(depthDevice);
 NewWorkspace = pcfromkinect(depthDevice,depthImage);
 [xyzNewWorkspace,~] = depthToPointCloud(depthImage,depthDevice);
 
-NewWorkspaceDist = sqrt( (NewWorkspace.Location(:,:,1)).^2 + (NewWorkspace.Location(:,:,2)).^2 + (NewWorkspace.Location(:,:,3)).^2 );
-BlankWorkspaceDist = sqrt( (BlankWorkspace.Location(:,:,1)).^2 + (BlankWorkspace.Location(:,:,2)).^2 + (BlankWorkspace.Location(:,:,3)).^2 );
+NewWorkspaceDist = sqrt( (NewWorkspace.Location(:,:,1)).^2 + (NewWorkspace.Location(:,:,1)).^2 + (NewWorkspace.Location(:,:,1)).^2 )
 
-Subtraction = (NewWorkspaceDist - BlankWorkspaceDist);
-
-% BinNewWorkspaceDist = im2bw(Subtraction, 0.001);
+Subtraction = NewWorkspace.Location - BlankWorkspace.Location;
 
 release(depthDevice);
 
 figure;
-imshow(adapthisteq(Subtraction));
-imtool(adapthisteq(Subtraction));
+imshow();
 title('New Workspace');
 xlabel('X');
 ylabel('Y');
