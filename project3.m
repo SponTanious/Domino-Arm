@@ -7,3 +7,8 @@ clear all;
 
 colorDevice = imaq.VideoDevice('kinect',1);
 colourDevice.FramesPerTrigger = 10000;
+
+%% Code
+
+Object_Detection(step(colorDevice));
+

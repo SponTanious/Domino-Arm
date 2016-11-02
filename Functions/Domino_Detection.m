@@ -1,15 +1,12 @@
-function [Domino_Locations, Circle_Locations ] = Object_Detection(image)
-%Object_Detection Summary of this function goes here
+function [dominoArray] = Domino_Detection(image)
+%Domino_Detection takes an image and find the loactions
 %   Detailed explanation goes here
 
-x = input('Press enter to begin object detction: ');
-
-originalImage = step(colorDevice);
+%Manipulate Image
+originalImage = image;
 originalImage = originalImage(100:840, 640:1500, :);
 gray = (rgb2gray(originalImage));
 warp = imadjust(gray, [],[], 4);
-% tform = estimateGeometricTransform([307,513,1408,1614; 649,205,205,649]', [124,550,1157,1797; 721,200,200,721]', 'projective');
-% warp = imwarp(warp, tform);
 
 %Detect FEATURES
 points = detectMSERFeatures(warp, 'MaxAreaVariation', 0.25);
@@ -18,12 +15,10 @@ points = detectMSERFeatures(warp, 'MaxAreaVariation', 0.25);
 figure; 
 h = imshow(warp);
 hold on;
-%Binarise
-% I = imwarp(gray, tform);
-% I = adapthisteq(I); 
+
+%Binarize Image and find circles
 I = adapthisteq(gray);
 I = imbinarize(I, 0.6);
-%Compute imfindcircles 
 [centers,radii] = imfindcircles(I, [12, 13],'ObjectPolarity','dark','Sensitivity',0.94,'EdgeThreshold',0.1, 'Method', 'twostage');
 
 %Loop through features
@@ -163,9 +158,8 @@ for n = 1:a(1)
   plot(x2, y2)
 end
 
-sz = size(RectangleInfo);
 Within = 0;
-for k = 1:sz(1)
+for k = 1:size(RectangleInfo, 1)
     for i = 1:size(NoDuplicatesC)
         [in,on] = inpolygon(NoDuplicatesC(i, 1),NoDuplicatesC(i, 2),RectangleInfo(k, 1:5),RectangleInfo(k, 6:10));
         if ((in) || (on))
