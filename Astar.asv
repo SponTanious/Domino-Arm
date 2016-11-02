@@ -1,0 +1,82 @@
+function Path = Astar(Map, goal_L, current_L)
+
+Map_Size = size(Map);
+
+Open = [current_L, CalcDist(current_L, goal_L), 0, 0];
+Closed = [];
+Path = [];
+
+while isempty(Open) == 0
+    %Sort OPEN by heurestic
+    [Y, I]=sort(Open(:,3));
+    Open = Open(I,:);
+    
+    %Find Best fringe Node
+    BestNode = Open(1, :);
+    
+    %If Best Node is the goal state,
+    if ( (BestNode(1) == goal_L(1)) && (BestNode(2) == goal_L(2)) )
+        %backtrace path to Best Node (through recorded parents) and return path.
+        Path = Closed;
+        break
+    end
+    
+    %Remove Best Node from OPEN, add it to CLOSED.
+    Open(1, :) = [];
+    Closed = [Closed; BestNode];
+        
+    %Create Best Node's successors. 
+    x = BestNode(1);
+    y = BestNode(2);
+    
+    U = [x, y-1];
+    L = [x-1, y];
+    D = [x, y+1];
+    R = [x+1, y];
+    
+    UL = [x-1, y-1];
+    UR = [x+1, y-1];
+    DL = [(x-1), (y+1)];
+    DR = [x+1, y+1];
+
+    %SN = [D; DL; L; UL; U; UR; R; DR];
+    SN = [D; L; U; R];
+    
+    %FIND NODE FROM SN THAT EXIST
+    ESN = [];
+    SN_Size = size(SN);
+    for i = 1:SN_Size(1)
+        Node = SN(i,:);
+        % Ensure that current point is within the bounds of the map
+        if ( ((0 < Node(1)) && (Node(1) < Map_Size(1)+1)) && ((0 < Node(2)) && (Node(2) < Map_Size(2)+1)) )
+            %Ensure that point in map is not equal to 0 (obstacle)
+            k = Map(Node(1), Node(2));
+            if (k == 1)
+                ESN = [ESN; Node, CalcDist(Node, goal_L)+CalcDist(current_L, Node), x, y];
+            end
+        end
+    end
+    
+    ESN_size = size(ESN);
+    for i = 1:ESN_size(1)
+        %if successor in closed
+        if (ismember(ESN(i,:), Closed) == 1)
+            continue
+        end
+        
+        %if successor not in open
+        %tentative_gScore = CalcDist(current_L, BestNode(1:2))+CalcDist(BestNode(1:2), ESN(i, 1:2));
+        if (ismember(ESN(i,:), Open) == 0)
+            Open = [Open; ESN(i,:)];
+        elseif (ESN(i,3) >= BestNode(3))
+            continue
+        end
+        
+        Open = [Open
+    end
+end
+
+Path = Closed;
+
+end
+
