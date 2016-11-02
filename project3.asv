@@ -11,11 +11,8 @@ colorDevice = imaq.VideoDevice('kinect',1);
 backImage = step(colorDevice);
 
 %% Code
-Map = GetMap(backImage, colorDevice);
-Map = imgaussfilt(Map, 3);
-Map = im2bw(Map, 0.25);
-% Map = imcomplement(Map);
-imshow(Map);
+% Map = GetMap(backImage, colorDevice);
+% imshow(Map);
 
-% DominoInfo = Domino_Detection(step(colorDevice), backImage);
+DominoInfo = Domino_Detection(step(colorDevice), backImage);
 
