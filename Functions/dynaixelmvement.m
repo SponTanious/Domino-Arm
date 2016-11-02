@@ -1,7 +1,7 @@
 %Postion of z rotation axis
 x0 = 0;
-y0 = -0.1;
-z0 = 0.087;
+y0 = -0.03;
+z0 = 0.225;
 
 %angles
 T1 = 180;
@@ -10,12 +10,13 @@ T3 = 180;
 
 %Arm Lengths
 L1 = 0;  
-L2 = 0.210;
-L3 = 0.211;
+L2 = 0.195;
+L3 = 0.215;
 
 %%
-points_lu=[[4,0,0]];
+points_lu=[[0,20,0]];
 points_lu = transpose(points_lu);
+initMotors(4);
 
 for pos = points_lu
     x = pos(1)*0.01;
@@ -36,7 +37,7 @@ for pos = points_lu
     %Calculate rotation in motor B and C
     %knock off domino
     tx = sqrt((x-x0)^2+(y-y0)^2);
-    ty = z;
+    ty = -(z);
 
     
     phi33 = atan2( sqrt( 1-((tx^2+ty^2-L2^2-L3^2)/(2*L2*L3))^2 ), (tx^2+ty^2-L2^2-L3^2)/(2*L2*L3) );
@@ -44,14 +45,21 @@ for pos = points_lu
     k2 = L3*sin(phi33);
     phi23 = atan2(ty, tx) - atan2(k2, k1);
     if (phi23>0)
-        phi2 = (phi23)*180/pi+90
+        phi2 = ((phi23)*180/pi)+90+6
+    elseif (phi23 == 0)
+        phi2 = 0
     else
-        phi2 = (-phi23-pi)*180/pi+90
+        phi2 = ((-phi23)*180/pi)+90+6
     end
-    phi3 = -phi33*180/pi+180
+    phi3 = -(phi33*180/pi)+270-7
+    
+    phi4 = 360-phi2-phi3+90
     
     T3 = phi3;
     T2 = phi2;
     T1 = phi1;
     
+    moveMotors([1,2,3,4],[phi1,phi2,phi3,phi4]);
+    
 end
+%%terminateMotors;
