@@ -9,14 +9,17 @@ for x = 1:numMotor
     calllib('dynamixel', 'dxl_write_word', x, 32, 50);
 end
 
+calllib('dynamixel', 'dxl_write_word', 1, 6, 0);
+calllib('dynamixel', 'dxl_write_word', 1, 8, 2000);
+
 calllib('dynamixel', 'dxl_write_word', 2, 6, 213);
 calllib('dynamixel', 'dxl_write_word', 2, 8, 512);
 
 calllib('dynamixel', 'dxl_write_word', 3, 6, 240);
 calllib('dynamixel', 'dxl_write_word', 3, 8, 810);
 
-calllib('dynamixel', 'dxl_write_word', 4, 6, 190);
-calllib('dynamixel', 'dxl_write_word', 4, 8, 500);
+calllib('dynamixel', 'dxl_write_word', 4, 6, 200);
+calllib('dynamixel', 'dxl_write_word', 4, 8, 800);
 
 
 end

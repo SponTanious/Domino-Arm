@@ -14,7 +14,7 @@ L2 = 0.195;
 L3 = 0.215;
 
 %%
-points_lu=[[0,10.2,0]];
+points_lu=[[0,15,0]];
 points_lu = transpose(points_lu);
 initMotors(4);
 
@@ -59,7 +59,7 @@ for pos = points_lu
     T2 = phi2;
     T1 = phi1;
     
-    moveMotors_Simultaneous([1,2,3,4],[phi4,phi2,phi3,phi1]);
+    moveMotors([1,2,3,4],[phi4,phi2,phi3,phi1]);
     
 end
 %%terminateMotors;
