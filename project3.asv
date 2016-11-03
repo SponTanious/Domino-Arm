@@ -11,8 +11,24 @@ colorDevice = imaq.VideoDevice('kinect',1);
 backImage = step(colorDevice);
 
 %% Code
-% Map = GetMap(backImage, colorDevice);
-% imshow(Map);
+while 1
+    %Detect Dominos
+    DominoInfo = Domino_Detection(step(colorDevice));
 
-DominoInfo = Domino_Detection(step(colorDevice), backImage);
-
+    %Find which domino to move and where
+    %Loop through array of do
+    startLocation = [0,0];
+    endLocation = [0,0];    
+    
+    %Create Map
+    Map = GetMap(backImage, colorDevice);
+    Map = imgaussfilt(Map, 3);
+    Map = im2bw(Map, 0.25);
+    
+    %solve for path
+    Path = GreedSearch(Map, startLocation, endLocation);
+    
+    %operate actuator
+    
+    
+end

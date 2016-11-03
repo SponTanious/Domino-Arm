@@ -1,4 +1,4 @@
-function [dominoArray] = Domino_Detection(image, emptyImage)
+function [dominoArray] = Domino_Detection(image)
 %Domino_Detection takes an image and find the loactions
 
 dominoArray = [];
@@ -77,7 +77,7 @@ for i = 1:(a(1)-1)
     end
 end
 
-% Draw lines and Circles
+% Draw lines
 a = size(NoDuplicates);
 for i = 1:a(1)
     n = NoDuplicates(i, 1);
@@ -123,6 +123,7 @@ for i = 1:(a(1)-1)
     end
 end
 
+%Draw Circles
 viscircles(NoDuplicatesC, NoDuplicatesR,'EdgeColor','r');
 
 %Draw Rectangles

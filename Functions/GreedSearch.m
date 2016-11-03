@@ -117,6 +117,6 @@ while isempty(Open) == 0
     end
 end
 
-
+Path = [];
 
 end

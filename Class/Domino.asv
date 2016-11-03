@@ -49,7 +49,7 @@ classdef Domino
             
             obj.current_location = [0.5*(obj.rectangle1(1)+obj.rectangle2(3)),   0.5*(obj.rectangle1(6)+obj.rectangle2(8))];
             
-            obj.goal_location = [(bj.value(1)*143.33 + 71.67), (obj.value(2)*123.33 + 61.67)];
+            obj.goal_location = [((obj.value(1)-1)*143.33 + 71.67), 
        end
     end
     
