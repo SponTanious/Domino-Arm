@@ -6,7 +6,7 @@ dominoArray = [];
 %Manipulate Image
 originalImage = image;
 gray = (rgb2gray(originalImage));
-gamma = imadjust(gray, [],[], 2);
+gamma = imadjust(gray, [],[], 6);
 
 %Detect FEATURES
 points = detectMSERFeatures(gamma, 'MaxAreaVariation', 0.25);
@@ -33,7 +33,7 @@ for n = 1:a(1)
     orient = points(n).Orientation;
     if((axe(1) > 5*axe(2)))
         if((axe(1) < 55) & (axe(1) > 44) & (axe(2) < 8) & (axe(2) > 4))
-            if( gamma(round(pos(2)), round(pos(1))) <= 5)
+            if( gamma(round(pos(2)), round(pos(1))) <= 20)
                 LineInfo = [LineInfo; n pos orient axe];
             end
         end
