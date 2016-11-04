@@ -1,15 +1,10 @@
-function Map = GetMap( backgroundImage, colourDevice )
+function Map = GetMap( backgroundImage, foregroundImage )
 %UNTITLED6 Summary of this function goes here
 %   Detailed explanation goes here
 
-foregroundImage = step(colourDevice);
-
 differenceImage2 = imfuse(foregroundImage,backgroundImage,'diff', 'Scaling', 'independent');
 
-
 Binarised = im2bw(differenceImage2, 0.2);
-
-imshow(Binarised);
 
 Size = size(Binarised);
 

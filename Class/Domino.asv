@@ -45,11 +45,15 @@ classdef Domino
                 error('CircleInfo2 must be a N by 3 Matrix')
             end
             
-            obj.moved = 0;
-            
             obj.current_location = [0.5*(obj.rectangle1(1)+obj.rectangle2(3)),   0.5*(obj.rectangle1(6)+obj.rectangle2(8))];
             
-            obj.goal_location = [((obj.value(1)-1)*143.33 + 71.67), 
+            obj.goal_location = [(obj.value(1)*143.33 + 71.67), (obj.value(2)*123.33 + 61.67)];
+            
+            if ( sqrt( (obj.current_location) (obj.goal_location).^2 ) <= 30 )
+                obj.moved = 1;
+            else
+                obj.moved = 0;
+            end
        end
     end
     
