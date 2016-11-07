@@ -1,28 +1,26 @@
+function dynamixelmovement(points_lu)
 %Postion of z rotation axis
 x0 = 0;
 y0 = -0.03;
 z0 = 0.225;
-
 %angles
 T1 = 180;
 T2 = 180;
 T3 = 180;
-
 %Arm Lengths
 L1 = 0;  
 L2 = 0.195;
 L3 = 0.215;
 
 %%
-points_lu=[[0,10.2,0]];
+points_lu=[[-20,22,0]];
 points_lu = transpose(points_lu);
 initMotors(4);
-
+%% Move to above point
 for pos = points_lu
     x = pos(1)*0.01;
     y = pos(2)*0.01;
     z = pos(3)*0.01;
-
     %Calculate rotation in motor A
     if (x0 < x)
         phi1 = 180-(90 - atan((y-y0)/(x-x0))*180/pi);
@@ -39,7 +37,7 @@ for pos = points_lu
     tx = sqrt((x-x0)^2+(y-y0)^2);
     ty = -(z);
 
-    
+   
     phi33 = atan2( sqrt( 1-((tx^2+ty^2-L2^2-L3^2)/(2*L2*L3))^2 ), (tx^2+ty^2-L2^2-L3^2)/(2*L2*L3) );
     k1 = L2 + L3*cos(phi33);
     k2 = L3*sin(phi33);
@@ -52,14 +50,9 @@ for pos = points_lu
         phi2 = ((-phi23)*180/pi)+90+6
     end
     phi3 = -(phi33*180/pi)+270-7
-    
     phi4 = 360-phi2-phi3
-    
-    T3 = phi3;
-    T2 = phi2;
-    T1 = phi1;
-    
-    moveMotors_Simultaneous([1,2,3,4],[phi4,phi2,phi3,phi1]);
-    
+    moveMotors([1,2,3,4],[phi4,phi2,phi3,phi1]);
 end
+%% Move to Domino
+
 %%terminateMotors;
