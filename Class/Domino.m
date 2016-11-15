@@ -11,6 +11,7 @@ classdef Domino
         rectangle2
         circle2
         moved
+        pose
     end
     
     methods
@@ -55,6 +56,8 @@ classdef Domino
             else
                 obj.moved = 0;
             end
+            
+            obj.pose = atan( abs(obj.rectangle1(6) - obj.rectangle2(9) ) /  abs(obj.rectangle1(1) - obj.rectangle2(4)) );
        end
     end
     

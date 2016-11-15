@@ -1,4 +1,4 @@
-function Path = Astar(Map, goal_L, current_L)
+function Path = GreedSearch(Map, goal_L, current_L, Pose)
 Map_Size = size(Map);
 
 Open = [current_L, CalcDist(current_L, goal_L), 0, 0];
@@ -30,12 +30,11 @@ while isempty(Open) == 0
                 a = NewLocation+1-i;
                 if ((Closed(NewLocation+1, 4) == Closed(a, 1)) && (Closed(NewLocation+1, 5) == Closed(a, 2)) )
                     Location = a;
-                    %break
                 end
             end
         end
        
-        break
+        break;
     end
     
     %Create Best Node's successors. 
@@ -52,16 +51,14 @@ while isempty(Open) == 0
     SN = [D; L; U; R];
 
     %FIND NODE FROM SN THAT EXISTS
-    SN_Size = size(SN);
     ESN = [];
-    for i = 1:SN_Size(1)
+    for i = 1:size(SN, 1)
         Node = SN(i,:);
         % Ensure that current point is within the bounds of the map
         if ( ((0 < Node(1)) && (Node(1) < Map_Size(1)+1)) && ((0 < Node(2)) && (Node(2) < Map_Size(2)+1)) )
-            %Find the current location within the map
-            k = Map(Node(1), Node(2));
+            
             %Ensure that point in map is not equal to 0 (obstacle)
-            if (k == 1)
+            if (detectCollision(Node, Map, Pose) == 0)
                 
                 %Ensure that current node is not any of the current path
                 %points
@@ -73,10 +70,11 @@ while isempty(Open) == 0
                     b = Node(2);
                     if ((a == P(1)) && (b == P(2)))
                         Failed = 1;
+                        break;
                     end
                 end
                 
-%                 %Make sure Node is not closed
+                %Make sure Node is not closed
                 Closed_size = size(Closed);
                 if (Failed == 0)
                     if (Closed_size > 0)
@@ -86,6 +84,7 @@ while isempty(Open) == 0
                             b = Node(2);
                             if ((a == P(1)) && (b == P(2)))
                                 Failed = 1;
+                                break;
                             end
                         end
                     end
