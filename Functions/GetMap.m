@@ -4,7 +4,7 @@ function Map = GetMap( backgroundImage, foregroundImage )
 
 differenceImage2 = imfuse(foregroundImage,backgroundImage,'diff', 'Scaling', 'independent');
 
-Binarised = im2bw(differenceImage2, 0.2);
+Binarised = im2bw(differenceImage2, 0.3);
 
 Size = size(Binarised);
 
