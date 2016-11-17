@@ -1,4 +1,5 @@
 function move_with_domino(points_lu)
+%Initialisation Stuff
 load('ArmVariables.mat');
 
 points_lu = transpose(points_lu);

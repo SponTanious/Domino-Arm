@@ -1,6 +1,6 @@
 function initMotors
 loadlibrary('dynamixel', 'dynamixel.h');
-libfunctions('dynamixel')
+% libfunctions('dynamixel');
 DEFAULT_PORTNUM = 4; %%com port
 DEFAULT_BAUDNUM = 1; %% 1Mbps
 calllib('dynamixel', 'dxl_initialize', DEFAULT_PORTNUM, DEFAULT_BAUDNUM);
@@ -20,7 +20,5 @@ calllib('dynamixel', 'dxl_write_word', 2, 8, 1018);
 
 calllib('dynamixel', 'dxl_write_word', 3, 6, 180);
 calllib('dynamixel', 'dxl_write_word', 3, 8, 1023);
-
-
 end
 
