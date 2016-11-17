@@ -18,7 +18,7 @@ hold on;
 %Binarize Image and find circles
 %differenceImage = imfuse(originalImage, emptyImage(100:840, 640:1500, :), 'diff', 'Scaling', 'independent');
 I = adapthisteq(gray);
-I = im2bw(I, 0.95).*255;
+I = im2bw(I, 0.93).*255;
 [centers,radii] = imfindcircles(I, [5, 7],'ObjectPolarity','dark','Sensitivity',0.94,'EdgeThreshold',0.1, 'Method', 'twostage');
 
 %Loop through features
@@ -31,7 +31,7 @@ for n = 1:a(1)
     pos = points(n).Location;
     orient = points(n).Orientation;
     if((axe(1) > 5*axe(2)))
-        if((axe(1) < 58) & (axe(1) > 42) & (axe(2) < 8) & (axe(2) > 4))
+        if((axe(1) < 58) & (axe(1) > 42) & (axe(2) < 10) & (axe(2) > 3))
             if( gamma(round(pos(2)), round(pos(1))) <= 20)
                 LineInfo = [LineInfo; n pos orient axe];
             end

@@ -58,7 +58,8 @@ while isempty(Open) == 0
         if ( ((0 < Node(1)) && (Node(1) < Map_Size(1)+1)) && ((0 < Node(2)) && (Node(2) < Map_Size(2)+1)) )
             
             %Ensure that point in map is not equal to 0 (obstacle)
-            if (detectCollision(Node, Map, Pose) == 0)
+            Failed = detectCollision(Node, Map, Pose);
+            if (~Failed)
                 
                 %Ensure that current node is not any of the current path
                 %points

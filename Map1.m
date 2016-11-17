@@ -3,7 +3,7 @@ a = imread('maze.png');
 a = im2bw(a);
 Map = a;
 
-current_L = [49,4];
+current_L = [49,5];
 goal_L = [210, 216];
 
 %% Maze 2

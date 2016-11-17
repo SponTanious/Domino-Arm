@@ -4,8 +4,12 @@ function Failed = detectCollision(Node, Map, Pose)
 
 Map_Size = size(Map);
 
-height = 110;
-width = 56;
+% figure;
+% imshow(Map);
+% hold on;
+
+height = 5;
+width = 5;
 
 point1_x = Node(2)-0.5*width*cos(Pose)-0.5*height*sin(Pose);
 point1_y = Node(1)+0.5*width*sin(Pose)-0.5*height*cos(Pose);
@@ -19,11 +23,14 @@ point4_y = Node(1)+0.5*width*sin(Pose)+0.5*height*cos(Pose);
 x1 = [point1_x, point2_x, point3_x, point4_x, point1_x];
 y1 = [point1_y, point2_y, point3_y, point4_y, point1_y];
 
-current_domino_mask = poly2mask(x1, y1, Map_Size(1), Map_Size(2));
+% plot(y1, x1);
 
+
+current_domino_mask = poly2mask(double(x1), double(y1), Map_Size(1), Map_Size(2));
 new_map = current_domino_mask.*imcomplement(Map);
 
-objects = find(new_map, 1);
+cropD = round(sqrt(width^2+height^2)/2);
+objects= find(new_map( Node(1)-cropD:Node(1)+cropD, Node(2)-cropD:Node(2)+cropD ) ,1);
 
 if( isempty(objects))
     Failed = 0;
