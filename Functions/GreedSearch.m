@@ -19,10 +19,8 @@ while isempty(Open) == 0
     if ((BestNode(1) == goal_L(1)) && (BestNode(2) == goal_L(2)) )
         %backtrace path to Best Node (through recorded parents) and return
         %path.
-        
         Closed_size = size(Closed);
         Location = Closed_size(1);
-        %Path = [Closed(Location, :); Path]
         while Location > 1
             Path = [Closed(Location, :); Path];
             NewLocation = Location-1;
@@ -30,11 +28,9 @@ while isempty(Open) == 0
                 a = NewLocation+1-i;
                 if ((Closed(NewLocation+1, 4) == Closed(a, 1)) && (Closed(NewLocation+1, 5) == Closed(a, 2)) )
                     Location = a;
-                    %break
                 end
             end
         end
-       
         break
     end
     
@@ -61,42 +57,44 @@ while isempty(Open) == 0
         if ( ((0 < Node(1)) && (Node(1) < Map_Size(1)+1)) && ((0 < Node(2)) && (Node(2) < Map_Size(2)+1)) )
             %Find the current location within the map
             k = Map(Node(1), Node(2));
-            %Ensure that point in map is not equal to 0 (obstacle)
+            
+            %Ensure that point is not in or near an obstcale
+            Failed = 0;
             if (k == 1)
-                
-                %Ensure that current node is not any of the current path
-                %points
-                Path_Size = size(Open);
-                Failed = 0;
-                for i = 1:Path_Size(1)
-                    P = Open(i, :);
-                    a = Node(1);
-                    b = Node(2);
-                    if ((a == P(1)) && (b == P(2)))
-                        Failed = 1;
-                    end
+                Failed = 1;
+            end
+            
+            %Ensure that current node is not in PATH
+            %points
+            Path_Size = size(Open);
+            for i = 1:Path_Size(1)
+                P = Open(i, :);
+                a = Node(1);
+                b = Node(2);
+                if ((a == P(1)) && (b == P(2)))
+                    Failed = 1;
                 end
-                
-%                 %Make sure Node is not closed
-                Closed_size = size(Closed);
-                if (Failed == 0)
-                    if (Closed_size > 0)
-                        for i = 1:Closed_size(1)
-                            P = Closed(i, :);
-                            a = Node(1);
-                            b = Node(2);
-                            if ((a == P(1)) && (b == P(2)))
-                                Failed = 1;
-                            end
+            end
+
+            %Make sure Node is not in CLOSED
+            Closed_size = size(Closed);
+            if (Failed == 0)
+                if (Closed_size > 0)
+                    for i = 1:Closed_size(1)
+                        P = Closed(i, :);
+                        a = Node(1);
+                        b = Node(2);
+                        if ((a == P(1)) && (b == P(2)))
+                            Failed = 1;
                         end
                     end
                 end
-                
-                if (Failed == 0)
-                    ESN = [ESN; Node, CalcDist(Node, goal_L), x, y];
-                end
-                
             end
+
+            if (Failed == 0)
+                ESN = [ESN; Node, CalcDist(Node, goal_L), x, y];
+            end
+               
         end
     end
     
@@ -117,6 +115,6 @@ while isempty(Open) == 0
     end
 end
 
-
+Path = [];
 
 end

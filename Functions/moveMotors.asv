@@ -26,7 +26,7 @@ end
 degree_diff = [degree_diff1 degree_diff2 degree_diff3 degree_diff4];
 max_degree_diff = max(degree_diff);
 %Given largest angular change, find the time to complete movement
-time = (max_degree_diff/180)*30;
+time = (max_degree_diff/180)*15;
 
 %% Determine The Power for each motor such that they all take the same amount of time to move, then move motor
 for x = 1:4
@@ -52,8 +52,6 @@ while (1)
     moving_3 = calllib('dynamixel','dxl_read_word', 3, 46);
     moving_4 = calllib('dynamixel','dxl_read_word', 4, 46);
     moving = [moving_1, moving_2, moving_3, moving_4];
-    if max(moving) == 0
-        break
-    end
-end
+    if max(moving)
+pause(time/2);
 end
