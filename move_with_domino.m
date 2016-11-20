@@ -141,6 +141,22 @@ T3 = (past_dyna_degrees3/axratio)+30;
 past_dyna_degrees4 = calllib('dynamixel','dxl_read_word', 4, 30);
 T4 = (past_dyna_degrees4/mxratio);
 
+% if abs(elbow-past_solution_elbow) == 1
+%     x_past = L2*cos(T1-90)+L3*cos(T2-180+T1-90);
+%     y_past = L2*sin(T1)+L3*sin(T2-180+T1-90);
+%     if x_past<0
+%         theta_past = 270-abs(atan(y_past/abs(x_past)));
+%     else
+%         theta_past = 90+abs(atan(y_past/x_past));
+%     end
+%     phi1 = (180-theta_past)
+%     phi3 = T3+90;
+%     phi4 =(phi2+1.5-T2)+(phi1-T1)+T4;
+%     move_single_motor(3,phi3);
+%     moveMotors([1,2,3,4],[T1,T2,phi3,phi4]);
+%     phi3 = phi3-90;
+%     move_single_motor(3,phi3);
+%     moveMotors([1,2,3,4],[])
 % delta_phi4 = T2-phi2+T1-phi1;
 % phi4 = T4-delta_phi4;
 % phi3 = 180+z*1000*degree_per_mm;

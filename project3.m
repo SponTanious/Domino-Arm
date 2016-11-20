@@ -1,6 +1,5 @@
 % Domino Arm
 % This is the main document code that controls all the functions
-
 %% Setup
 close all;
 clear all;
@@ -121,11 +120,10 @@ while 1
 
             %Get goal and current locations, and scale down by column and
             %row ratios
-            goal_L = round(Domino.goal_location);
-            current_L = fliplr(round(Domino.current_location));
-            %goal_L = [round(goal_L(1)/row_ratio), round(goal_L(2)/column_ratio)];
-            goal_L = [127, 37];
-            current_L = [round(current_L(1)/row_ratio), round(current_L(2)/column_ratio)];
+            Biggoal_L = round(Domino.goal_location);
+            Bigcurrent_L = fliplr(round(Domino.current_location));
+            goal_L = [round(Biggoal_L(1)/row_ratio), round(Biggoal_L(2)/column_ratio)];
+            current_L = [round(Bigcurrent_L(1)/row_ratio), round(Bigcurrent_L(2)/column_ratio)];
 
             %Get path for small image. 
             Path1 = GreedSearch(new_map, goal_L, current_L, Domino.pose);
@@ -148,15 +146,28 @@ while 1
                 Columns = column_ratio*Coords(:, 2);
                 Path = [Rows, Columns];
                 
+                size = size(Path);
+                Path(1, 1) = Bigcurrent_L(1);
+                Path(1, 2) = Bigcurrent_L(2);
+                Path(size(1), 1) = Biggoal_L(1);
+                Path(size(1), 2) = Biggoal_L(2);
+                
                 close all;
                 imshow(foreImage); hold on; plot(Path1(:, 2), Path1(:, 1));
                 x = input('Press enter to begin moving the arm');
 
                 %Function for moving domino to goal location
                 %MoveDomino(Path);
-                Path = Path*mm_per_pixel;
-                pause(1);
-
+                Path = Path*cm_per_pixel;
+                size = size(Path);
+                size  = size(1);
+                x_coord = Path(:,2);
+                y_coord = Path(:,1);
+                z_coord = zeros(size, 1);
+                path_vector = [x_coord,y_coord,z_coord];
+                domino_coord = [x_coord(1),y_coord(1),z_coord(1),Domino.pose*180/pi];
+                move_to_domino(domino_coord);
+                move_with_domino(path_vector);
                 break
             end
         end
