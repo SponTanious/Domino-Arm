@@ -1,10 +1,18 @@
 %% Maze 1
-a = imread('maze.png');
-a = im2bw(a);
+close all;
+a = imread('Maze2.PNG');
 Map = a;
+MAPSIZE1 = size(Map);
+Map = imresize(Map, 0.2);
+Map = im2bw(Map);
+MAPSIZE2 = size(Map);
+imtool(Map);
 
-current_L = [49,5];
-goal_L = [210, 216];
+column_ratio = MAPSIZE1(2)/MAPSIZE2(2);
+row_ratio = MAPSIZE1(1)/MAPSIZE2(1);
+
+current_L = [112, 112];
+goal_L = [8, 55];
 
 %% Maze 2
 a = imread('maze2.png');
@@ -48,4 +56,9 @@ Map = [1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0;
 current_L = [1 1];
 goal_L = [5 5];
  
+%% Map with no obstacles
+Map = ones(100, 100);
+current_L = [50, 50];
+goal_L = [75, 75];
+
  

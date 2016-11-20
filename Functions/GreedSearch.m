@@ -1,9 +1,13 @@
 function Path = GreedSearch(Map, goal_L, current_L, Pose)
 Map_Size = size(Map);
-
+Potential = [];
 Open = [current_L, CalcDist(current_L, goal_L), 0, 0];
 Closed = [];
 Path = [];
+Domino_Width = 23;
+Domino_Height = 12;
+cropD = round(sqrt(Domino_Width^2+Domino_Height^2)/2);
+
 
 while isempty(Open) == 0
     %Sort OPEN by heurestic
@@ -17,6 +21,7 @@ while isempty(Open) == 0
     
     %If Best Node is the goal state,
     if ((BestNode(1) == goal_L(1)) && (BestNode(2) == goal_L(2)) )
+        disp('Finished');
         %backtrace path to Best Node (through recorded parents) and return
         %path.
         
@@ -49,16 +54,20 @@ while isempty(Open) == 0
     R = [x+1, y];
     DR = [x+1, y-1];
     SN = [D; L; U; R];
-
-    %FIND NODE FROM SN THAT EXISTS
     ESN = [];
+    %FIND NODE FROM SN THAT EXISTS
     for i = 1:size(SN, 1)
+        sizeESN = size(ESN);
+        if sizeESN > 0
+            disp(ESN);
+        end
+%        
         Node = SN(i,:);
         % Ensure that current point is within the bounds of the map
-        if ( ((0 < Node(1)) && (Node(1) < Map_Size(1)+1)) && ((0 < Node(2)) && (Node(2) < Map_Size(2)+1)) )
+        if ( ((Domino_Height < Node(1)) && (Node(1) < Map_Size(1)-Domino_Height)) && ((Domino_Width < Node(2)) && (Node(2) < Map_Size(2)-Domino_Width)) )
             
             %Ensure that point in map is not equal to 0 (obstacle)
-            Failed = detectCollision(Node, Map, Pose);
+            Failed = detectCollision(Node, Map, Pose,Domino_Height, Domino_Width);
             if (~Failed)
                 
                 %Ensure that current node is not any of the current path
@@ -98,6 +107,8 @@ while isempty(Open) == 0
             end
         end
     end
+    
+    Potential = [Potential; ESN];
     
     ESN_size = size(ESN);
     for i = 1:ESN_size(1)
