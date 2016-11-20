@@ -1,15 +1,16 @@
 function move_single_motor (id, goal_pos)
 %% Initialisation Stuff
-load('ArmVariables.mat');
-initMotors;
-terminateMotors;
-initMotors;
+initMotors; %Can delete once main code is finalised
 %% Main Code
 axratio = 3.41;
-mxratio = 11.377;
+mxratio = 11.375;
  if (id==4)
         dyna_degrees = (goal_pos)*mxratio;
-        calllib('dynamixel', 'dxl_write_word', id, 32, 50);
+        calllib('dynamixel', 'dxl_write_word', id, 32, 40);
+        calllib('dynamixel','dxl_write_word', id, 30, dyna_degrees);
+ elseif (id==3)
+        dyna_degrees = (goal_pos-30)*axratio;
+        calllib('dynamixel', 'dxl_write_word', id, 32, 80);
         calllib('dynamixel','dxl_write_word', id, 30, dyna_degrees);
  else
         dyna_degrees = (goal_pos-30)*axratio;
