@@ -5,11 +5,10 @@ initMotors;
 terminateMotors;
 initMotors;
 %% Main Code
-% Raise End Effector
-move_single_motor(3,250);
-pause(3);
-
-% Straighten Arm
-move_single_motor(1,180);
-move_single_motor(2,180);
+move_to_domino([0,(L2+L3+y0)*100,1.5,0])
+% % Raise End Effector
+% move_single_motor(3,180);
+% % Straighten Arm
+% move_single_motor(1,180);
+% move_single_motor(2,180);
 end
