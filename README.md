@@ -27,3 +27,6 @@ There are several section in the main.m file that will need to be run so that ev
 The following link is a video of the arm we created in operation. <br>
 <a href="https://www.youtube.com/watch?v=p-tF9si5Xu8&feature=youtu.be">Click Here for Our Video Demonstartion</a>
 
+## License
+This library is licensed under MIT. Full license text is available in LICENSE.
+
