@@ -146,20 +146,11 @@ while 1
             %row ratios
             Biggoal_L = round(Domino.goal_location);
             Bigcurrent_L = fliplr(round(Domino.current_location));
-<<<<<<< HEAD
             goal_L = [round(Biggoal_L(1)/row_ratio), round(Biggoal_L(2)/column_ratio)];
             current_L = [round(Bigcurrent_L(1)/row_ratio), round(Bigcurrent_L(2)/column_ratio)];
-
-            %Get path for small image. 
-=======
-            goal_L = [round(Biggoal_L(1)/row_ratio), round(Biggoal_L(2)/column_ratio)]
-            current_L = [round(Bigcurrent_L(1)/row_ratio), round(Bigcurrent_L(2)/column_ratio)]
-            
             %Get path for small image.
->>>>>>> refs/remotes/SponTanious/master
             Path1 = GreedSearch(new_map, goal_L, current_L, Domino.pose);
             disp(Path1);
-
 
             %Greed search returns a blank path if there is no possible path to the goal location
             %If path is not empty, command arm to move domino, then break
@@ -190,16 +181,6 @@ while 1
 
                 %Function for moving domino to goal location
                 %MoveDomino(Path);
-<<<<<<< HEAD
-                Path = Path*cm_per_pixel;
-                size = size(Path);
-                size  = size(1);
-                x_coord = Path(:,2);
-                y_coord = Path(:,1);
-                z_coord = zeros(size, 1);
-                path_vector = [x_coord,y_coord,z_coord];
-                domino_coord = [x_coord(1),y_coord(1),z_coord(1),Domino.pose*180/pi];
-=======
                 Path2 = Path*cm_per_pixel_Rows;
                 NewPath = Path2(1:15:end, :);
                 NewPath = [NewPath(:, 1), NewPath(:, 2); ([0, - center(1)+70]+Biggoal_L)*cm_per_pixel_Rows];
@@ -210,7 +191,6 @@ while 1
                 z_coord = zeros(Msize, 1);
                 path_vector = [x_coord,y_coord,z_coord];
                 domino_coord = [x_coord(1),y_coord(1),z_coord(1),(Domino.pose*180/pi)-90];
->>>>>>> refs/remotes/SponTanious/master
                 move_to_domino(domino_coord);
                 move_with_domino(path_vector);
                 break
