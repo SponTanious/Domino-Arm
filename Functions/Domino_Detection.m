@@ -1,5 +1,6 @@
 function [dominoArray] = Domino_Detection(image)
-%Domino_Detection takes an image and find the loactions
+%Domino_Detection takes an image and find the loactions of all dominoes and
+%there values
 
 dominoArray = [];
 
