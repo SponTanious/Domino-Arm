@@ -10,7 +10,7 @@ colorDevice = imaq.VideoDevice('kinect',1);
 image = step(colorDevice);
 center = find_centeral_frame(image);
 centerCropped = [1, 850];
-imtool(image);
+% imtool(image);
 
 %% Get Background Image
 backImage = step(colorDevice);
@@ -171,7 +171,6 @@ while 1
                 Rows = row_ratio*Coords(:, 1);
                 Columns = column_ratio*Coords(:, 2) - center(1)+70;
                 Path = [Rows, Columns];
-                disp('a');
                 
                 close all;
                 imshow(foreImage); hold on; plot(Path1(:, 2), Path1(:, 1));
