@@ -4,9 +4,9 @@
 
 <b>Latest Release: </b> 0.5     <b>Release Date: </b> 21/11/2016
 
-This project utilizes a robotic arm and computer vision to play dominoes. It uses MATLAB.
+This project utilizes MATLAB, a robotic arm and computer vision to sort dominoes.
 
-## Required Libraries:
+## Required Software and Libraries:
 - Matlab Computer Vision
 - Matab Kinect
 - Dynamixel Library
@@ -17,7 +17,8 @@ This project utilizes a robotic arm and computer vision to play dominoes. It use
   - 3x Ax-12a
   - 1x Mx-12w
 - 1x Microsofr Kinect v2.0
+- 1x Box of Dominoes
 
-
-## Installation
-
+## Setup and Installation
+If you have a a robot with arms of a different specifiction than ours, you will have to update the ArmVariables.mat file.
+There are several section in the main.m file that will need to be run so that everything can be intialized.
