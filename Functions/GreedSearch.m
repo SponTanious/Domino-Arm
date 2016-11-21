@@ -1,4 +1,13 @@
 function Path = GreedSearch(Map, goal_L, current_L, Pose)
+% GreedSearch is a function that finds a route betwen current_L and goal_L
+% avoiding obstacle in Map.
+%   Map is a Binary Image (consisting of 1's and 0's) were 0 is an obstacle
+%       and 1 is a free space
+%   goal_L is the location in the map we want to reach
+%   current_L is the location in the map at wich we start the search
+%   Pose is the orientation of the current domino
+
+
 Map_Size = size(Map);
 original_dist = CalcDist(current_L, goal_L);
 Open = [current_L, CalcDist(current_L, goal_L), 0, 0];
