@@ -1,9 +1,13 @@
-function Path = GreedSearch(Map, goal_L, current_L)
+function Path = GreedSearch(Map, goal_L, current_L, Pose)
 Map_Size = size(Map);
-
+Potential = [];
 Open = [current_L, CalcDist(current_L, goal_L), 0, 0];
 Closed = [];
 Path = [];
+Domino_Width = 23;
+Domino_Height = 12;
+cropD = round(sqrt(Domino_Width^2+Domino_Height^2)/2);
+
 
 while isempty(Open) == 0
     %Sort OPEN by heurestic
@@ -17,6 +21,7 @@ while isempty(Open) == 0
     
     %If Best Node is the goal state,
     if ((BestNode(1) == goal_L(1)) && (BestNode(2) == goal_L(2)) )
+        disp('Finished');
         %backtrace path to Best Node (through recorded parents) and return
         %path.
         
@@ -30,18 +35,16 @@ while isempty(Open) == 0
                 a = NewLocation+1-i;
                 if ((Closed(NewLocation+1, 4) == Closed(a, 1)) && (Closed(NewLocation+1, 5) == Closed(a, 2)) )
                     Location = a;
-                    %break
                 end
             end
         end
        
-        break
+        break;
     end
     
     %Create Best Node's successors. 
     x = BestNode(1);
     y = BestNode(2);
-    
     D = [x, y-1];
     DL = [x-1, y-1];
     L = [x-1, y];
@@ -50,19 +53,22 @@ while isempty(Open) == 0
     UR = [x+1, y+1];
     R = [x+1, y];
     DR = [x+1, y-1];
-    SN = [D; DL; L; UL; U; UR; R; DR];
-
-    %FIND NODE FROM SN THAT EXISTS
-    SN_Size = size(SN);
+    SN = [D; L; U; R];
     ESN = [];
-    for i = 1:SN_Size(1)
+    %FIND NODE FROM SN THAT EXISTS
+    for i = 1:size(SN, 1)
+        sizeESN = size(ESN);
+        if sizeESN > 0
+            disp(ESN);
+        end
+%        
         Node = SN(i,:);
         % Ensure that current point is within the bounds of the map
-        if ( ((0 < Node(1)) && (Node(1) < Map_Size(1)+1)) && ((0 < Node(2)) && (Node(2) < Map_Size(2)+1)) )
-            %Find the current location within the map
-            k = Map(Node(1), Node(2));
+        if ( ((Domino_Height < Node(1)) && (Node(1) < Map_Size(1)-Domino_Height)) && ((Domino_Width < Node(2)) && (Node(2) < Map_Size(2)-Domino_Width)) )
+            
             %Ensure that point in map is not equal to 0 (obstacle)
-            if (k == 1)
+            Failed = detectCollision(Node, Map, Pose,Domino_Height, Domino_Width);
+            if (~Failed)
                 
                 %Ensure that current node is not any of the current path
                 %points
@@ -74,10 +80,11 @@ while isempty(Open) == 0
                     b = Node(2);
                     if ((a == P(1)) && (b == P(2)))
                         Failed = 1;
+                        break;
                     end
                 end
                 
-%                 %Make sure Node is not closed
+                %Make sure Node is not closed
                 Closed_size = size(Closed);
                 if (Failed == 0)
                     if (Closed_size > 0)
@@ -87,6 +94,7 @@ while isempty(Open) == 0
                             b = Node(2);
                             if ((a == P(1)) && (b == P(2)))
                                 Failed = 1;
+                                break;
                             end
                         end
                     end
@@ -100,11 +108,7 @@ while isempty(Open) == 0
         end
     end
     
-    %Sort OPEN by heurestic
-    if (isempty(ESN) == 0)
-        [Y, I]=sort(ESN(:,3));
-        ESN = ESN(I,:);
-    end
+    Potential = [Potential; ESN];
     
     ESN_size = size(ESN);
     for i = 1:ESN_size(1)

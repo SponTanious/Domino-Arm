@@ -1,27 +1,31 @@
-function [ output_args ] = find_centeral_frame( input_args )
-%find_centeral_frame Summary of this function goes here
-%   Detailed explanation goes here
+function position = find_centeral_frame(image)
+%find_centeral_frame finds the centeral frame of the image
 
-%% Find Central Frame
-x = input('Press enter to find central frame: ');
+position = [];
 
-a = size(params.RotationMatrices);
-views = a(3);
+% Create a cascade detector object.
+faceDetector = vision.CascadeObjectDetector('FrontalFaceLBP');
 
-locationCtoO = params.TranslationVectors(views, :);
-rotationCtoO = params.RotationMatrices(:,:,views);
+% Run the detector.
+bboxes = step(faceDetector, image);
 
-dist1 = sqrt(locationCtoO(1)^2+locationCtoO(2)^2+locationCtoO(3)^2)
+for i = 1:size(bboxes, 1)
+    x  = bboxes(i, 1) + bboxes(i, 3)/2;
+    y = bboxes(i, 2) + bboxes(i, 4);
+    [in,on] = inpolygon(x, y , [800, 1120, 1120, 800, 800], [0, 0, 300, 300, 0]);
+    if (in)
+        position = [x,y];
+        break
+    end
+end
 
-locationOtoC = -1*rotationCtoO*transpose(locationCtoO)
-rotationOtoC = transpose(rotationCtoO);
+if (isempty(position))
+    error('Centeral Frame not found')
+end
 
-alpha = atan2(rotationOtoC(2,1), rotationOtoC(1,1))*180/pi
-beta = atan2(rotationOtoC(3,1), sqrt(rotationOtoC(3,2)^2+rotationOtoC(3,3)^2))*180/pi
-gamma = atan2(rotationOtoC(3,2), rotationOtoC(3,3))*180/pi
-
-K = transpose(params.IntrinsicMatrix);
-E = [rotationOtoC, locationOtoC];
+% Draw the returned bounding box around the detected face.
+videoOut = insertObjectAnnotation(image,'rectangle',bboxes,'Face');
+figure, imshow(videoOut), title('Detected face');
 
 end
 
