@@ -1,15 +1,15 @@
 function Path = GreedSearch(Map, goal_L, current_L, Pose)
 Map_Size = size(Map);
-Potential = [];
+original_dist = CalcDist(current_L, goal_L);
 Open = [current_L, CalcDist(current_L, goal_L), 0, 0];
 Closed = [];
 Path = [];
-Domino_Width = 23;
-Domino_Height = 12;
+Domino_Width = 12;
+Domino_Height = 23;
 cropD = round(sqrt(Domino_Width^2+Domino_Height^2)/2);
 
 
-while isempty(Open) == 0
+while (isempty(Open) == 0) && (size(Closed, 1) <= 600)
     %Sort OPEN by heurestic
     [Y, I]=sort(Open(:,3));
     Open = Open(I,:);
@@ -64,7 +64,7 @@ while isempty(Open) == 0
 %        
         Node = SN(i,:);
         % Ensure that current point is within the bounds of the map
-        if ( ((Domino_Height < Node(1)) && (Node(1) < Map_Size(1)-Domino_Height)) && ((Domino_Width < Node(2)) && (Node(2) < Map_Size(2)-Domino_Width)) )
+        if ( ((Domino_Height/2 < Node(1)) && (Node(1) < Map_Size(1)-Domino_Height/2)) && ((Domino_Width/2 < Node(2)) && (Node(2) < Map_Size(2)-Domino_Width/2)) )
             
             %Ensure that point in map is not equal to 0 (obstacle)
             Failed = detectCollision(Node, Map, Pose,Domino_Height, Domino_Width);
@@ -107,8 +107,6 @@ while isempty(Open) == 0
             end
         end
     end
-    
-    Potential = [Potential; ESN];
     
     ESN_size = size(ESN);
     for i = 1:ESN_size(1)

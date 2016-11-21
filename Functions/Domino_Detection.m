@@ -6,7 +6,7 @@ dominoArray = [];
 %Manipulate Image
 originalImage = image;
 gray = (rgb2gray(originalImage));
-gamma = imadjust(gray, [],[], 6);
+gamma = imadjust(gray, [],[], 5);
 
 %Detect FEATURES
 points = detectMSERFeatures(gamma, 'MaxAreaVariation', 0.25);
@@ -17,9 +17,10 @@ hold on;
 
 %Binarize Image and find circles
 %differenceImage = imfuse(originalImage, emptyImage(100:840, 640:1500, :), 'diff', 'Scaling', 'independent');
-I = adapthisteq(gray);
-I = im2bw(I, 0.93).*255;
-[centers,radii] = imfindcircles(I, [5, 7],'ObjectPolarity','dark','Sensitivity',0.94,'EdgeThreshold',0.1, 'Method', 'twostage');
+gamma2 = imadjust(gray, [],[], 7);
+I = adapthisteq(gamma2);
+I = im2bw(I, 0.8).*255;
+[centers,radii] = imfindcircles(I, [4, 7],'ObjectPolarity','dark','Sensitivity',0.9,'EdgeThreshold',0.1, 'Method', 'twostage');
 
 %Loop through features
 a = size(points);
@@ -30,8 +31,8 @@ for n = 1:a(1)
     axe = points(n).Axes;
     pos = points(n).Location;
     orient = points(n).Orientation;
-    if((axe(1) > 5*axe(2)))
-        if((axe(1) < 58) & (axe(1) > 42) & (axe(2) < 10) & (axe(2) > 3))
+    if((axe(1) > 4*axe(2)))
+        if((axe(1) < 60) && (axe(1) > 30) && (axe(2) < 20) && (axe(2) > 1))
             if( gamma(round(pos(2)), round(pos(1))) <= 20)
                 LineInfo = [LineInfo; n pos orient axe];
             end
@@ -76,8 +77,7 @@ for i = 1:(a(1)-1)
 end
 
 % Draw lines
-a = size(NoDuplicates);
-for i = 1:a(1)
+for i = 1:size(NoDuplicates, 1)
     n = NoDuplicates(i, 1);
     plot(points(n), 'showPixelList', false, 'showEllipses', true);
 end
@@ -155,7 +155,7 @@ for n = 1:a(1)
   x2 = [point5_x, point6_x, point7_x, point8_x, point5_x];
   y2 = [point5_y, point6_y, point7_y, point8_y, point5_y];
   
-  RectangleInfo = [RectangleInfo; x1, y1, x2, y2];
+  RectangleInfo = [RectangleInfo; x1, y1, x2, y2, B(4)];
   
   plot(x1, y1)
   plot(x2, y2)
@@ -183,7 +183,7 @@ for k = 1:size(RectangleInfo, 1)
     end
     text(double(RectangleInfo(k, 11)),double(RectangleInfo(k, 16)),sprintf('%d', value2), 'Color', 'blue', 'FontSize', 14);
     
-    dominoArray = [dominoArray, Domino([value1, value2], RectangleInfo(k, 1:10), circle1, RectangleInfo(k, 11:20), circle2)];
+    dominoArray = [dominoArray, Domino([value1, value2], RectangleInfo(k, 1:10), circle1, RectangleInfo(k, 11:20), circle2, RectangleInfo(k,21))];
 end
 
 end

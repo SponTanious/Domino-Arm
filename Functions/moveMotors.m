@@ -60,8 +60,8 @@ while (1)
     end
 end
 %% Motor Position Error Correction (get goal_pos = present_pos)
-goal_pos_1 = calllib('dynamixel','dxl_read_word', 1, 30)
-goal_pos_2 = calllib('dynamixel','dxl_read_word', 2, 30)
+goal_pos_1 = calllib('dynamixel','dxl_read_word', 1, 30);
+goal_pos_2 = calllib('dynamixel','dxl_read_word', 2, 30);
 while (1)
     present_pos_1 = calllib('dynamixel','dxl_read_word', 1, 36);
     present_pos_2 = calllib('dynamixel','dxl_read_word', 2, 36);
@@ -72,14 +72,16 @@ while (1)
         break
     else
         if abs(error(1))>2
-            calllib('dynamixel', 'dxl_write_word', 1, 32, 20);
-            current_goal_pos = calllib('dynamixel','dxl_read_word', 1, 30);
-            calllib('dynamixel','dxl_write_word', 1, 30, current_goal_pos+(error(1)*0.5));
+%             calllib('dynamixel', 'dxl_write_word', 1, 32, 20);
+%             current_goal_pos = calllib('dynamixel','dxl_read_word', 1, 30);
+%             calllib('dynamixel','dxl_write_word', 1, 30, current_goal_pos+(error(1)*0.5));
+              break
         end
         if abs(error(2))>2
-            calllib('dynamixel', 'dxl_write_word', 2, 32, 20);
-            current_goal_pos = calllib('dynamixel','dxl_read_word', 2, 30);
-            calllib('dynamixel','dxl_write_word', 2, 30, current_goal_pos+(error(2)*0.5));
+%             calllib('dynamixel', 'dxl_write_word', 2, 32, 20);
+%             current_goal_pos = calllib('dynamixel','dxl_read_word', 2, 30);
+%             calllib('dynamixel','dxl_write_word', 2, 30, current_goal_pos+(error(2)*0.5));
+              break
         end
     end
     %Wait for all motors to finish moving

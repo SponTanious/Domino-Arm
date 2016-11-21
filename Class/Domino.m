@@ -15,7 +15,7 @@ classdef Domino
     end
     
     methods
-        function obj = Domino(DominoValue, RectangleInfo1, CircleInfo1, RectangleInfo2, CircleInfo2)
+        function obj = Domino(DominoValue, RectangleInfo1, CircleInfo1, RectangleInfo2, CircleInfo2, Pose)
             if ((size(DominoValue, 1) == 1) && (size(DominoValue, 2) == 2))
                 obj.value = sort(DominoValue);
             else
@@ -48,16 +48,16 @@ classdef Domino
             
             obj.current_location = [0.5*(obj.rectangle1(1)+obj.rectangle2(3)),   0.5*(obj.rectangle1(6)+obj.rectangle2(8))];
             
-            obj.goal_location = [(obj.value(1)*850/6 + 850/12), (obj.value(2)*770/6 + 770/12)];
+            obj.goal_location = get_domino_location(obj.value);
             
-            vect = (obj.current_location - obj.goal_location).^2;
-            if ( sqrt( vect(1)^2 + vect(2)^2) <= 20 )
+            vect = (obj.current_location - fliplr(obj.goal_location)).^2;
+            if ( sqrt(sum(vect)) <= 100 )
                 obj.moved = 1;
             else
                 obj.moved = 0;
             end
             
-            obj.pose = atan( abs(obj.rectangle1(6) - obj.rectangle2(9) ) /  abs(obj.rectangle1(1) - obj.rectangle2(4)) );
+            obj.pose = Pose;
        end
     end
     
