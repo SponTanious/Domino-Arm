@@ -1,5 +1,6 @@
 function position = find_centeral_frame(image)
-%find_centeral_frame finds the centeral frame of the image
+%find_centeral_frame finds the centeral frame of the image using face
+%detection
 
 position = [];
 
