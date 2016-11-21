@@ -1,6 +1,5 @@
 function Location = get_domino_location(DominoValue)
-%get_domino_location Summary of this function goes here
-%   Detailed explanation goes here
+%get_domino_location returns the goal state of the specified domino
 
 Location = [850, 385];
 
