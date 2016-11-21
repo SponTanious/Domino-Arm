@@ -92,7 +92,7 @@ while isempty(Open) == 0
                 end
                 
                 if (Failed == 0)
-                    ESN = [ESN; Node, CalcDist(Node, goal_L)+CalcDist(current_L, Node), x, y];
+                    ESN = [ESN; Node, CalcDist(Node, goal_L), x, y];
                 end
                 
             end
