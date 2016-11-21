@@ -20,5 +20,10 @@ This project utilizes MATLAB, a robotic arm and computer vision to sort dominoes
 - 1x Box of Dominoes
 
 ## Setup and Installation
-If you have a a robot with arms of a different specifiction than ours, you will have to update the ArmVariables.mat file.
+If you have a a robot with arms of a different specifiction than ours, you will have to update the ArmVariables.mat file. <br>
 There are several section in the main.m file that will need to be run so that everything can be intialized.
+
+## Our Demonstration
+The following link is a video of the arm we created in operation. <br>
+<a href="https://www.youtube.com/watch?v=p-tF9si5Xu8&feature=youtu.be">Click Here for Our Video Demonstartion</a>
+
