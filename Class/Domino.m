@@ -1,21 +1,22 @@
 classdef Domino
-    %Domino Summary of this class goes here
-    %   Detailed explanation goes here
+    %Domino is a class that manages the information for each domino.
     
     properties
-        value
-        current_location
-        goal_location
-        rectangle1
-        circle1
-        rectangle2
-        circle2
-        moved
-        pose
+        value               % Stores the value of the domino in a 1x2 vector
+        current_location    % Stores the current location of the domino in a 1x2 vector
+        goal_location       % Stores the goal location of the domino in a 1x2 vector
+        rectangle1          % Stores the first rectangle polygon vector
+        circle1             % Stores the location and radius of the circles found in in rectangle1
+        rectangle2          % Stores the second rectangle polygon vector
+        circle2             % Stores the location and radius of the circles found in in rectangle2
+        moved               % Returns 1 when domino is at goal location, otherwise 0
+        pose                % Stores the current pose of the domino
     end
     
     methods
-        function obj = Domino(DominoValue, RectangleInfo1, CircleInfo1, RectangleInfo2, CircleInfo2)
+        function obj = Domino(DominoValue, RectangleInfo1, CircleInfo1, RectangleInfo2, CircleInfo2, Pose)
+            % Domino constructor
+            
             if ((size(DominoValue, 1) == 1) && (size(DominoValue, 2) == 2))
                 obj.value = sort(DominoValue);
             else
@@ -48,16 +49,16 @@ classdef Domino
             
             obj.current_location = [0.5*(obj.rectangle1(1)+obj.rectangle2(3)),   0.5*(obj.rectangle1(6)+obj.rectangle2(8))];
             
-            obj.goal_location = [(obj.value(1)*850/6 + 850/12), (obj.value(2)*770/6 + 770/12)];
+            obj.goal_location = get_domino_location(obj.value);
             
-            vect = (obj.current_location - obj.goal_location).^2;
-            if ( sqrt( vect(1)^2 + vect(2)^2) <= 20 )
+            vect = (obj.current_location - fliplr(obj.goal_location)).^2;
+            if ( sqrt(sum(vect)) <= 100 )
                 obj.moved = 1;
             else
                 obj.moved = 0;
             end
             
-            obj.pose = atan( abs(obj.rectangle1(6) - obj.rectangle2(9) ) /  abs(obj.rectangle1(1) - obj.rectangle2(4)) );
+            obj.pose = Pose;
        end
     end
     
