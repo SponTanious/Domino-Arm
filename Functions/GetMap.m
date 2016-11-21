@@ -1,6 +1,6 @@
 function Map = GetMap( backgroundImage, foregroundImage )
-%UNTITLED6 Summary of this function goes here
-%   Detailed explanation goes here
+%GetMap takes two images and returns a binarized image that represents a
+%map
 
 differenceImage2 = imfuse(foregroundImage,backgroundImage,'diff', 'Scaling', 'independent');
 
