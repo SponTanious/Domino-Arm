@@ -1,10 +1,12 @@
 function move_to_domino(points_lu)
+%Position the end effector above the positon of a domino (coordinates) and
+%drop the end effector onto it.
 %% Initialisation Stuff
 load('ArmVariables.mat');
 points_lu = transpose(points_lu);
 initMotors;
 pos = points_lu;
-%% Define Goal Position & Move to above point
+%% Define Goal Position (coordinates) & Raise the End Effector to ensure it is well above the workspace when moving
 x = pos(1)*0.01-x0;
 y = pos(2)*0.01-y0;
 z = (pos(3)+2)*0.01-z0;
@@ -29,11 +31,10 @@ phi2_2 = ((phi22_2)*180/pi)+180;
 %Check which of the two solutions are valid
 solution_1_elbow = 0;
 solution_2_elbow = 0;
-elbow=0;
 if 90<phi1_1 && phi1_1<270
     solution_1 = 1; %1 Means Valid solution
 else
-    solution_1 = 0;
+    solution_1 = 0;%0 Means non-valid solution
 end
 if 90<phi1_2 && phi1_2<270
     solution_2 = 1;
@@ -84,57 +85,45 @@ elseif T1>180 && T2<180
     past_solution_elbow = 2;
 end
 
-% Pick Between Solutions (if more than 1 is valid)
+% Pick Between Solutions (if more than 1 is valid) such that it matches the
+% previous elbow (if possible)
 if past_solution_elbow == 1
     if solution_1_elbow == 1
         phi1 = phi1_1;
         phi2 = phi2_1;
-        elbow=1;
     elseif solution_2_elbow == 1
         phi1 = phi1_2;
         phi2 = phi2_2;
-        elbow=1;
     else
         if solution_1 == 1
             phi1 = phi1_1;
             phi2 = phi1_2;
-            elbow = solution_1_elbow;
         else
             phi1 = phi1_2;
             phi2 = phi2_2;
-            elbow=solution_2_elbow;
         end
     end
 elseif past_solution_elbow == 2
     if solution_1_elbow == 2
         phi1 = phi1_1;
         phi2 = phi2_1;
-        elbow =2;
     elseif solution_2_elbow == 2
         phi1 = phi1_2;
         phi2 = phi2_2;
-        elbow=2;
     else
         if solution_1 == 1
             phi1 = phi1_1;
             phi2 = phi1_2;
-            elbow = solution_1_elbow;
         else
             phi1 = phi1_2;
             phi2 = phi2_2;
-            elbow=solution_2_elbow;
         end
     end
 end
-%% Error Correction Stuff
-% z = (pos(3))*0.01-z0;
-% phi3 = 180+z*1000*degree_per_mm;
-% move_single_motor(3,phi3);
-% move_single_motor(4,0);
-%% Find Angle/pose and move all motors to point above domino
+%% Find pose and move all motors to the calculated point (but rasied z such that it is still above the domino)
 phi4 = 75+(phi2-180)+(phi1-180)-angle;
 moveMotors([1,2,3,4],[phi1,(phi2+1.5),phi3,phi4]);
-%% Drop Onto Point
+%% Drop the z onto the domino to apply pressure
 z = z-0.025;
 phi3 = 180+z*1000*degree_per_mm;
 move_single_motor(3,phi3);
