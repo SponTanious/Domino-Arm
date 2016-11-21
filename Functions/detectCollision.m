@@ -1,6 +1,6 @@
 function Failed = detectCollision(Node, Map, Pose, height, width)
-%detectCollision Summary of this function goes here
-%   Detailed explanation goes here
+%detectCollision Searches for obstacles within a polygon around a central
+%node
 
 Map_Size = size(Map);
 
