@@ -1,15 +1,14 @@
 function moveMotors(id, goal_pos)
-%MOVEMOTORS moves the motors in list ID to their GOAL_POS (anglular
-%position)
+%Moves the motors in list ID to their goal positions (in degrees of their local axis)
+%% Ininitialisation of Variables
 axratio = 3.41;
 mxratio = 11.375;
-initMotors; %Can Delete Once Main Code is Finished
-%% Find Current/Previous Angle of Each Motor then Angular difference to the Desired Angle
+%% Find Current & Goal Angle for Each Motor then find the angular difference for each motor.
 for x = 1:4
     if (id(x)==4)
-        past_dyna_degrees4 = calllib('dynamixel','dxl_read_word', id(x), 30);
-        past_angle4 = past_dyna_degrees4/mxratio;
-        degree_diff4 = abs(past_angle4-goal_pos(x));
+        past_dyna_degrees4 = calllib('dynamixel','dxl_read_word', id(x), 30); %Get Position Value from Dynamixel
+        past_angle4 = past_dyna_degrees4/mxratio; %Convert dynamixel position to real world degrees
+        degree_diff4 = abs(past_angle4-goal_pos(x)); %Find angular difference in the proposed movement
     elseif (id(x)==2)
         past_dyna_degrees2 = calllib('dynamixel','dxl_read_word', id(x), 30);
         past_angle2 = (past_dyna_degrees2/axratio)+30;
@@ -28,9 +27,8 @@ end
 %Motors
 degree_diff = [degree_diff1 degree_diff2 degree_diff3 degree_diff4];
 max_degree_diff = max(degree_diff);
-%Given largest angular change, find the time to complete movement
+%Given largest angular change, find the 'time' for the motors to complete their movement
 time = (max_degree_diff/180)*15;
-
 %% Determine The Power for each motor such that they all take the same amount of time to move, then move motor
 for x = 1:4
     if (id(x)==4)
@@ -59,38 +57,39 @@ while (1)
         break
     end
 end
-%% Motor Position Error Correction (get goal_pos = present_pos)
+%% Motor Position Error Correction (get goal_pos actually = present_pos)
+%Define the Goal Angle for each motor (only used motors 1 & 2 because the
+%others were fine)
 goal_pos_1 = calllib('dynamixel','dxl_read_word', 1, 30);
 goal_pos_2 = calllib('dynamixel','dxl_read_word', 2, 30);
 while (1)
-    present_pos_1 = calllib('dynamixel','dxl_read_word', 1, 36);
+    present_pos_1 = calllib('dynamixel','dxl_read_word', 1, 36); %Get current angle of both motors
     present_pos_2 = calllib('dynamixel','dxl_read_word', 2, 36);
-    pos_error_1 = goal_pos_1-present_pos_1;
+    pos_error_1 = goal_pos_1-present_pos_1; %Find the error between the goal angle and current angle
     pos_error_2 = goal_pos_2-present_pos_2;
-    error = [pos_error_1, pos_error_2]
-    if max(error)<=2 && min(error)>=-2
-        break
-    else
+    error = [pos_error_1, pos_error_2]; %Combine Error into Vector
+    if max(error)<=2 && min(error)>=-2 %Check if both errors are within +/- 2
+        break %If so, break out of error loop as goal angle approx = current angle
+    else %If error not within acceptable range, use the error and adjust the goal angle of each motor to overall reduce error
         if abs(error(1))>2
-%             calllib('dynamixel', 'dxl_write_word', 1, 32, 20);
-%             current_goal_pos = calllib('dynamixel','dxl_read_word', 1, 30);
-%             calllib('dynamixel','dxl_write_word', 1, 30, current_goal_pos+(error(1)*0.5));
-              break
+            calllib('dynamixel', 'dxl_write_word', 1, 32, 20);
+            current_goal_pos = calllib('dynamixel','dxl_read_word', 1, 30);
+            calllib('dynamixel','dxl_write_word', 1, 30, current_goal_pos+(error(1)*0.5));
         end
         if abs(error(2))>2
-%             calllib('dynamixel', 'dxl_write_word', 2, 32, 20);
-%             current_goal_pos = calllib('dynamixel','dxl_read_word', 2, 30);
-%             calllib('dynamixel','dxl_write_word', 2, 30, current_goal_pos+(error(2)*0.5));
-              break
+            calllib('dynamixel', 'dxl_write_word', 2, 32, 20);
+            current_goal_pos = calllib('dynamixel','dxl_read_word', 2, 30);
+            calllib('dynamixel','dxl_write_word', 2, 30, current_goal_pos+(error(2)*0.5));
         end
     end
-    %Wait for all motors to finish moving
+%Wait for motors to finish moving after the new compensated angles have
+%been driven to each motor.
 while (1)
     moving_1 = calllib('dynamixel','dxl_read_word', 1, 46);
     moving_2 = calllib('dynamixel','dxl_read_word', 2, 46);
     moving = [moving_1, moving_2];
     if max(moving) == 0
-        break
+        break %Once neither motor is moving, break out of this while and reloop through error to check if it is fixed
     end
 end
 end

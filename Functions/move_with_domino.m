@@ -1,23 +1,21 @@
 function move_with_domino(points_lu)
-
-%Initialisation Stuff
+%Once the end effector is already resting on a domino (with some pressure
+%applied), hold onto that domino and move between a path of vectors to a
+%final destination.
+%% Initialisation Stuff
 load('ArmVariables.mat');
 number_of_coords = size(points_lu);
 number_of_coords = number_of_coords(1);
 points_lu = transpose(points_lu);
 count = 0;
 initMotors;
-
-
-%% Move with domino between a series of coordinates
+%% Loop through a series of coordinates to move the arm to
 for pos = points_lu
-% Define Goal Pos:
+%For inout, define coordiantes in m.
 x = pos(1)*0.01-x0;
 y = pos(2)*0.01-y0;
 z = (pos(3)-0.5)*0.01-z0;
-phi3 = 180+z*1000*degree_per_mm;
-%% Find Angles
-%Calculate rotation in motor A, B & C:
+%% Find All possible angles for each motor given the coordinate
 phi22_1 = atan2( sqrt( 1-(((x)^2+(y)^2-(L2)^2-(L3)^2)/(2*L2*L3))^2 ), (x^2+y^2-(L2)^2-(L3)^2)/(2*(L2)*(L3)) );
 phi22_2 = -atan2( sqrt( 1-(((x)^2+(y)^2-(L2)^2-(L3)^2)/(2*L2*L3))^2 ), (x^2+y^2-(L2)^2-(L3)^2)/(2*(L2)*(L3)) );
 k1_1 = L2 + L3*cos(phi22_1);
@@ -32,21 +30,20 @@ phi2_1 = ((phi22_1)*180/pi)+180;
 phi1_2 = ((phi11_2)*180/pi)+90;
 phi2_2 = ((phi22_2)*180/pi)+180;
 %% Check We Have The Right Elbow Solution, If not, change solution.
-%Check which of the two solutions are valid
+%Check which of the two arm solutions are valid
 solution_1_elbow = 0;
 solution_2_elbow = 0;
-elbow=0;
 if 90<phi1_1 && phi1_1<270
     solution_1 = 1; %1 Means Valid solution
 else
-    solution_1 = 0;
+    solution_1 = 0; %0 Means non-valid solution
 end
 if 90<phi1_2 && phi1_2<270
     solution_2 = 1;
 else
     solution_2 = 0;
 end
-%Check there is at least 1 valid solution (if not, give error)
+%Check there is at least 1 valid solution (if not, return error)
 if solution_1 == 0 && solution_2 == 0
     error('Coordinate Not Physically Possible')
 end
@@ -74,7 +71,7 @@ if solution_2 == 1
         solution_2_elbow = 1;
     end
 end
-% Check if Previous Solution was elbow left or right
+% Check if Previous Solution (arm position) was elbow left or right
 past_dyna_degrees1 = calllib('dynamixel','dxl_read_word', 1, 30);
 T1 = (past_dyna_degrees1/axratio)+30;
 past_dyna_degrees2 = calllib('dynamixel','dxl_read_word', 2, 30);
@@ -90,51 +87,43 @@ elseif T1>180 && T2<180
     past_solution_elbow = 2;
 end
 
-% Pick Between Solutions (if more than 1 is valid)
+% Pick Between Solutions (if more than 1 is valid) so it matches the past
+% elbow solution (if possible).
 if past_solution_elbow == 1
     if solution_1_elbow == 1
         phi1 = phi1_1;
         phi2 = phi2_1;
-        elbow=1;
     elseif solution_2_elbow == 1
         phi1 = phi1_2;
         phi2 = phi2_2;
-        elbow=1;
     else
         if solution_1 == 1
             phi1 = phi1_1;
             phi2 = phi1_2;
-            elbow = solution_1_elbow;
         else
             phi1 = phi1_2;
             phi2 = phi2_2;
-            elbow=solution_2_elbow;
         end
     end
 elseif past_solution_elbow == 2
     if solution_1_elbow == 2
         phi1 = phi1_1;
         phi2 = phi2_1;
-        elbow =2;
     elseif solution_2_elbow == 2
         phi1 = phi1_2;
         phi2 = phi2_2;
-        elbow=2;
     else
         if solution_1 == 1
             phi1 = phi1_1;
             phi2 = phi1_2;
-            elbow = solution_1_elbow;
         else
             phi1 = phi1_2;
             phi2 = phi2_2;
-            elbow=solution_2_elbow;
         end
     end
 end
-%% Error Correction Stuff
-%Include height compensators here if necessary
 %% Finalize Angles & Move Motors
+%Get All the past/current anges of the motors
 past_dyna_degrees1 = calllib('dynamixel','dxl_read_word', 1, 30);
 T1 = (past_dyna_degrees1/axratio)+30;
 past_dyna_degrees2 = calllib('dynamixel','dxl_read_word', 2, 30);
@@ -144,79 +133,13 @@ T3 = (past_dyna_degrees3/axratio)+30;
 past_dyna_degrees4 = calllib('dynamixel','dxl_read_word', 4, 30);
 T4 = (past_dyna_degrees4/mxratio);
 
-<<<<<<< HEAD:move_with_domino.m
-=======
-%If elbow solution is changing, release domino & change to opposite
-%solution then pick up again & Continue
->>>>>>> refs/remotes/SponTanious/master:Functions/move_with_domino.m
-% if abs(elbow-past_solution_elbow) == 1
-%     x_past = L2*cos(T1-90)+L3*cos(T2-180+T1-90);
-%     y_past = L2*sin(T1)+L3*sin(T2-180+T1-90);
-%     if x_past<0
-%         theta_past = 270-abs(atan(y_past/abs(x_past)));
-<<<<<<< HEAD:move_with_domino.m
-%     else
-%         theta_past = 90+abs(atan(y_past/x_past));
-%     end
-%     phi1 = (180-theta_past)
-%     phi3 = T3+90;
-%     phi4 =(phi2+1.5-T2)+(phi1-T1)+T4;
-%     move_single_motor(3,phi3);
-%     moveMotors([1,2,3,4],[T1,T2,phi3,phi4]);
-%     phi3 = phi3-90;
-%     move_single_motor(3,phi3);
-%     moveMotors([1,2,3,4],[])
-=======
-%         if T1>=180
-%             phi1_compliment = T1-2*(T1-theta_past);
-%             if T2<=180
-%                 phi2_compliment = T2+180;
-%             else
-%                 phi2_compliment = T2-180;
-%             end
-%         else
-%             phi1_compliment = T1+2*(theta_past-T1);
-%             if T2<=180
-%                 phi2_compliment = T2+180;
-%             else
-%                 phi2_compliment = T2-180;
-%             end
-%         end
-%     else
-%         theta_past = 90+abs(atan(y_past/x_past));
-%         if T1>=180
-%             phi1_compliment = T1-2*(T1-theta_past);
-%             if T2<=180
-%                 phi2_compliment = T2+180;
-%             else
-%                 phi2_compliment = T2-180;
-%             end
-%         else
-%             phi1_compliment = T1+2*(theta_past-T1);
-%             if T2<=180
-%                 phi2_compliment = T2+180;
-%             else
-%                 phi2_compliment = T2-180;
-%             end
-%         end
-%     end
-%     phi3 = T3+90;
-%     phi4 =(phi2_compliment+1.5-T2)+(phi1_compliment-T1)+T4;
-%     move_single_motor(3,phi3);
-%     moveMotors([1,2,3,4],[phi1_compliment,phi2_compliment,phi3,phi4]);
-%     phi3 = phi3-90;
-%     move_single_motor(3,phi3);
-% end
 
->>>>>>> refs/remotes/SponTanious/master:Functions/move_with_domino.m
-% delta_phi4 = T2-phi2+T1-phi1;
-% phi4 = T4-delta_phi4;
-% phi3 = 180+z*1000*degree_per_mm;
-
-phi3 = T3;
-phi4 =(phi2+1.5-T2)+(phi1-T1)+T4;
-moveMotors([1,2,3,4],[phi1,(phi2+1.5),phi3,phi4]);
-count = count+1;
+phi3 = T3;%Keep phi3 (height) at same as previous (want to hold onto domino)
+phi4 =(phi2+1.5-T2)+(phi1-T1)+T4; %Adjust pose angle so the world pose is unchanged between points
+moveMotors([1,2,3,4],[phi1,(phi2+1.5),phi3,phi4]); %Move the Motors (+1.5 in phi2 is for a design offset of  the end effector)
+count = count+1; %Check how many coordinates it has moved to in this path
+%If the current coordinate is the last one of the path, change the pose of the domino
+%so it is vertical with respect to global axis
 if count == number_of_coords
     phi4 = (75+(phi2+1.5-180)+(phi1-180)-90);
     if phi4<0
@@ -227,7 +150,5 @@ if count == number_of_coords
     move_single_motor(4,phi4);
 end
 end
-
-terminateMotors;
-
+terminateMotors; %Once the path complete, terminate the motors
 end
